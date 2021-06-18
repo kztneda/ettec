@@ -72,6 +72,8 @@
                 contentType: false,
                 processData: false
             }).always(function(respuesta){
+                $('tbody').empty();
+                $('thead tr').empty();
                 $.each(respuesta.headers, function(k,v){
                     const tmp = $('<th/>',{
                         text: v,
@@ -85,12 +87,26 @@
                         tr.append( (k2 == 0) ? 
                             $('<th/>',{
                                 text: v2,
-                                scope: 'row'
+                                scope: 'row',
+                                class: "align-middle"
                             }) :
                             $('<td/>',{
-                                text: v2
+                                text: v2,
+                                class: "align-middle"
                             })
                         )
+                        if(Object.keys(v).length == k2 + 1){
+                            $.ajax({
+                                url: "http://api.openweathermap.org/data/2.5/weather?q=" + v2 + "&appid=e63a92d64a9294491e83e0b589f334fc&units=metric&lang=es",
+                                dataType: "JSON",
+                                type: "GET"
+                            }).always(function(temp){
+                                tr.append(
+                                    $('<td>').html("min: " + temp.main.temp_min + " ºC / max: " + temp.main.temp_max + " ºC<br>Sensación térmica: " + temp.main.feels_like + " ºC" +
+                                        "<hr>Actual: " + temp.main.temp + " ºC " + temp.weather[0].description)
+                                )
+                            })
+                        }
                     })
                     $('tbody').append(tr)
                 })

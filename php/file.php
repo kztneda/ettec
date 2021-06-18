@@ -6,6 +6,7 @@ while (!feof($file)) {
 }
 
 $headers = explode(',', $data[0][0]);
+$headers[] = "Temperatura";
 
 $body = array();
 
